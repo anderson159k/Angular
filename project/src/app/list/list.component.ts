@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, createComponent } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -119,6 +119,7 @@ export class ListComponent implements OnInit{
         }
       }
     }
+    console.log("pause ok");
   }
 
   //chama o pause e desbloqueia o mat select,
@@ -128,6 +129,7 @@ export class ListComponent implements OnInit{
     if (item) {
       item.blocked = false;
     }
+    console.log("stop ok");
   }
 
 

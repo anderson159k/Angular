@@ -35,15 +35,15 @@
             <div class="sw-container ">
               <div class="button-container fs-6">
                 <div class="stopwatch ps-1">
-                  Iniciar serviço: <span *ngIf="!element.mecanico || !element.mecanico.running">{{
+                  Iniciar serviço: <span>{{
                     getTimer(element.codigo) }}</span>
                 </div>
-                <ng-container *ngIf="element.mecanico">
-                  <button *ngIf="!element.mecanico.running" class="btnB pt-2"
+                <ng-container>
+                  <button class="btnB pt-2"
                     (click)="start(element.codigo)">
                     <i class="btn btn-success">Play</i>
                   </button>
-                  <button *ngIf="element.mecanico.running" class="btnB pt-2"
+                  <button class="btnB pt-2"
                     (click)="pause(element.codigo)">
                     <i class="btn btn-secondary">Pause</i>
                   </button>
