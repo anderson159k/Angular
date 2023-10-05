@@ -7,14 +7,7 @@ table {
 
 tr.example-detail-row {
   height: 0;
-}
-
-tr.example-element-row:not(.example-expanded-row):hover {
-  background: whitesmoke;
-}
-
-tr.example-element-row:not(.example-expanded-row):active {
-  background: #efefef;
+  background: #f4f4f4;
 }
 
 .example-element-row td {
@@ -56,5 +49,5 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .btnB {
   border: 0px;
-  background-color: white;
+  background-color: #f4f4f4;
 }

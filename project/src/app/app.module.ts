@@ -49,13 +49,20 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
+import { CdTimerModule } from 'angular-cd-timer';
+import { MecanicTimerComponent } from './list/mecanic-timer/mecanic-timer.component';
+import { MecanicListComponent } from './list/mecanic-list/mecanic-list.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    ListComponent,
+    MecanicTimerComponent,
+    MecanicListComponent,
   ],
   imports: [
+    CdTimerModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
