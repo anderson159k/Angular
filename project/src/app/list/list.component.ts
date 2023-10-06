@@ -1,12 +1,7 @@
-import { Component, OnInit, createComponent } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgFor, NgIf, NgStyle } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatSelectModule } from '@angular/material/select';
-import { CdTimerModule } from 'angular-cd-timer';
 import { MekanicInItem } from '../interfaces/mecanic-in-iten';
+import { MecanicTimerComponent } from './mecanic-timer/mecanic-timer.component';
 
 
 
@@ -32,6 +27,25 @@ const ELEMENT_DATA: TableElement[] = [
 })
 export class ListComponent implements OnInit {
 
+  /**
+   * O Decorator @ViewChild possibilita que um elemento html ou componente aninhado
+   * seja acessado na classe do componente.
+   * 
+   * Nesse caso, temos o componente MecanicTimerComponent, que é usado aqui no html de
+   * ListComponent da seguinte forma:
+   * 
+   * <app-mecanic-timer #timer></<app-mecanic-timer>
+   * 
+   * então, para acessar alguma propriedade ou método público de #timer(do html)
+   * utilizamos this._timer(script)
+   * 
+   * veja que na função `onMecanicChanged` utilizamos esse recurso da seguinte forma:
+   * ```
+   *  this._timer.defineInitialTimer();
+   * ```
+   */
+  @ViewChild('timer') _timer: MecanicTimerComponent;
+
   allMecanics = ['Mec1', 'Mec2', 'Mec3', 'Mec4', 'Mec5'];
 
   itenControler2 = new Map<string, {
@@ -45,6 +59,7 @@ export class ListComponent implements OnInit {
     if (item) {
       item.selectedMecanic = name;
     }
+    this._timer.defineInitialTimer();
   }
 
   initializeMapController() {
