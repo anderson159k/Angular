@@ -1,13 +1,12 @@
-  <div class="ps-1 pe-1 bg-white pt-3 rounded shadow-sm">
-      <p class="fontTest d-flex justify-content-center">{{display.hours}}:{{display.minutes}}:{{display.seconds}}</p>
-      <cd-timer class="fontTest d-flex justify-content-center" #timer [autoStart]="false" [startTime]="startTime">
-        
-      </cd-timer>
-      
-      <ng-container class="p-3 bg-white d-flex justify-content-center">
-      <div class="bg-white">
-        <button class="btnB ps-3 py-3" 
-        (click)="start()">
+<div class="ps-1 pe-1 bg-white pt-3 rounded shadow-sm">
+  <p class="fontTest d-flex justify-content-center">
+    {{display.hours}}:{{display.minutes}}:{{display.seconds}}
+  </p>
+
+  <ng-container class="p-3 bg-white d-flex justify-content-center">
+    <div class="bg-white">
+      <button class="btnB ps-3 py-3"
+              (click)="start()">
         <i class="btn btn-success fontTestB">Play</i>
       </button>
       <!-- <button class="btnB  py-3"
@@ -15,14 +14,15 @@
         <i class="btn btn-secondary">Resume</i>
       </button> -->
       <button class="btnB  py-3 "
-        (click)="pause()">
+              (click)="pause()">
         <i class="btn btn-secondary fontTestB">Pause</i>
       </button>
-      
-      <button class="btnB pe-3 py-3 " (click)="reset()">
+
+      <button class="btnB pe-3 py-3 "
+              (click)="reset()">
         <i class="btn btn-danger fontTestB">Reset</i>
       </button>
     </div>
   </ng-container>
 </div>
-    <div id="resetB"></div>
+<div id="resetB"></div>

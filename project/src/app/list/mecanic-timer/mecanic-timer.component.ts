@@ -8,7 +8,7 @@ import { Subscription, interval } from 'rxjs';
   styleUrls: ['./mecanic-timer.component.scss']
 })
 
-export class MecanicTimerComponent implements OnInit , OnDestroy {
+export class MecanicTimerComponent implements OnInit, OnDestroy {
 
   tick = interval(1000);
   sub: Subscription;
@@ -26,80 +26,83 @@ export class MecanicTimerComponent implements OnInit , OnDestroy {
   };
 
   ngOnInit(): void {
-
-    
-
     this.defineInitialTimer()
-
-      // if (this.iten) {
-      //   const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
-      //   this.sub = this.tick.subscribe(x => {
-      //     const secs = Date.now() - this.startTime;
-      //     this.timer = {
-      //       hours: "",
-      //       minutes: "",
-      //       seconds: `${secs}`.padStart(2, '0')
-      //     }
-      //   });
-      // }
-
-    
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
- 
- calTime(): void {
-  if (this.iten) {
-  const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
-  if (!mecanico || !mecanico.running) {
-    return;
-  }
-  const elapsedTime = Date.now() - this.startTime;
-  this.setDisplay(elapsedTime + mecanico.total)
-  console.log(mecanico);
- }}
-
-
-  defineInitialTimer() {
+  calTime(): void {
     if (this.iten) {
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
-      if (mecanico && typeof mecanico.lastPlayTime === 'number' && typeof mecanico.total === 'number') {
-        this.startTime = mecanico.lastPlayTime;
+      if (!mecanico || !mecanico.running) {
+        return;
+      }
+      /**
+       * elapsedTime é o tempo decorrido(em milisegundos) que se passou desde a última
+       * vez em que foi clicado no play para o mecânico selecionado
+       */
+      const elapsedTime = Date.now() - this.startTime;
+
+      /**
+       * totalTime é o tempo decorrido somado a outros intervalos que 
+       * já haviam sido contabilizados anteriormente (quando já houve play/pause antes)
+       */
+      const totalTime = elapsedTime + mecanico.total;
+      this.setDisplay(totalTime)
+    }
+  }
+
+  /**
+   * Em Typescript, modificadores de acesso não definidos são considerados como públicos por padrão.
+   * Nesse caso deixamos explícito que esse método é público para evitar modificar para privado acidentalmente
+   * 
+   * Esse método é público porque está sendo chamado a partir de ListComponent quando o mecânico é alterado;
+   */
+  public defineInitialTimer() {
+    if (this.iten) {
+      const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
+      if (mecanico) {
+        if (mecanico.lastPlayTime?.valueOf()) { 
+          // se o mecânico possui `lastPlayTime`, utiliza esse valor nos cálculos
+          this.startTime = mecanico.lastPlayTime.valueOf();
+        } else {
+          // senão, o `lastPlayTime` é agora
+          // o código entra aqui na primeira vez que se aperta play em um mecânico
+          this.startTime = Date.now();
+        }
         this.setDisplay(mecanico.total);
       }
     }
   }
-  
+
+  /** 
+   * Funcionando perfeitamente, recebe um valor total em milisegundos e 
+   * atualiza o timer com horas:minutos:segundos
+   */
   setDisplay(totalTime: number): void {
     const totalSeconds = Math.floor(totalTime / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-  
     this.display = {
       hours: hours.toString().padStart(2, '0'),
       minutes: minutes.toString().padStart(2, '0'),
       seconds: seconds.toString().padStart(2, '0')
     };
-    
-    
   }
 
   start(): void {
     if (this.iten) {
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
-      
       if (mecanico) {
         mecanico.finished = true;
         mecanico.running = true;
         this.defineInitialTimer();
-          this.sub = this.tick.subscribe(x => this.calTime());
+        this.sub = this.tick.subscribe(() => this.calTime());
         if (typeof this.iten.blocked !== 'undefined') {
           this.iten.blocked = true;
-          
         }
       }
     }
@@ -117,8 +120,8 @@ export class MecanicTimerComponent implements OnInit , OnDestroy {
       }
     }
   }
-  
-  reset():void {
+
+  reset(): void {
     if (this.iten) {
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
       if (mecanico) {
