@@ -1,16 +1,10 @@
+import { MecanicTableService } from 'src/app/services/mecanic-table.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MekanicInItem } from '../interfaces/mecanic-in-iten';
 import { MecanicTimerComponent } from './mecanic-timer/mecanic-timer.component';
-
-
-
-const ELEMENT_DATA: TableElement[] = [
-  { estado: '', Sequencia: 1, codigo: "1", Descrição: 'teste', quantidade: 1000, valorun: 200, descontopecas: 145, descontoad: 0, valorlq: 200 },
-  { estado: '', Sequencia: 2, codigo: "2", Descrição: '4.0026', quantidade: 1, valorun: 1, descontopecas: 1, descontoad: 1, valorlq: 1 },
-  { estado: '', Sequencia: 3, codigo: "3", Descrição: '6.941', quantidade: 1, valorun: 1, descontopecas: 1, descontoad: 1, valorlq: 1 },
-  { estado: '', Sequencia: 4, codigo: "4", Descrição: '9.0122', quantidade: 1, valorun: 1, descontopecas: 1, descontoad: 1, valorlq: 1 },
-];
+import { Iten } from '../interfaces/iten-interface';
+import { SavingLocalService } from '../services/saving-local.service';
 
 
 @Component({
@@ -27,32 +21,32 @@ const ELEMENT_DATA: TableElement[] = [
 })
 export class ListComponent implements OnInit {
 
-  /**
-   * O Decorator @ViewChild possibilita que um elemento html ou componente aninhado
-   * seja acessado na classe do componente.
-   * 
-   * Nesse caso, temos o componente MecanicTimerComponent, que é usado aqui no html de
-   * ListComponent da seguinte forma:
-   * 
-   * <app-mecanic-timer #timer></<app-mecanic-timer>
-   * 
-   * então, para acessar alguma propriedade ou método público de #timer(do html)
-   * utilizamos this._timer(script)
-   * 
-   * veja que na função `onMecanicChanged` utilizamos esse recurso da seguinte forma:
-   * ```
-   *  this._timer.defineInitialTimer();
-   * ```
-   */
+  constructor (
+    private savingLocalService: SavingLocalService,
+    private mecanicTableService: MecanicTableService
+  ) {}
+
   @ViewChild('timer') _timer: MecanicTimerComponent;
+
+    dataSource: Iten [] = [];
+
+    
 
   allMecanics = ['Mec1', 'Mec2', 'Mec3', 'Mec4', 'Mec5'];
 
   itenControler2 = new Map<string, {
     selectedMecanic: string,
     mecanics: Map<string, MekanicInItem>,
-    blocked: boolean
+    blocked: boolean,
+    blockedStartButton: boolean
   }>();
+  
+  
+
+  itenlist: {
+    selectedMecanic: any,
+  };
+  tempo: string = '';
 
   onMecanicChanged(codItem: string, name: string) {
     const item = this.itenControler2.get(codItem);
@@ -62,9 +56,16 @@ export class ListComponent implements OnInit {
     this._timer.defineInitialTimer();
   }
 
+  adicionarItemNaTabela() {
+    if (this.tempo) {
+      this.mecanicTableService.addMecanicData(this.itenlist.selectedMecanic, this.tempo);
+      this.tempo = ''; 
+    }
+  }
+
   initializeMapController() {
 
-    for (const service of ELEMENT_DATA) {
+    for (const service of this.dataSource) {
       const mecanics = new Map();
 
       for (const mecanic of this.allMecanics) {
@@ -78,17 +79,20 @@ export class ListComponent implements OnInit {
       }
       this.itenControler2.set(
         service.codigo, {
-          selectedMecanic: "", blocked: false,
-        mecanics
+          selectedMecanic: "", 
+          blocked: false,
+          blockedStartButton: false,
+          mecanics
       })
     }
   }
 
   ngOnInit(): void {
+    this.dataSource = this.savingLocalService.getData();
     this.initializeMapController();
   }
 
-  dataSource = ELEMENT_DATA;
+ 
   columnsToDisplay = [
     'Estado',
     'Sequencia',
@@ -101,22 +105,11 @@ export class ListComponent implements OnInit {
     'valorlq',
     'mechanic'];
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
-  expandedElement: TableElement | null;
+  expandedElement: Iten | null;
 
 
   
 }
 
-interface TableElement {
-  estado: string;
-  Sequencia: number;
-  codigo: string;
-  Descrição: string;
-  quantidade: number;
-  valorun: number;
-  descontopecas: number;
-  descontoad: number;
-  valorlq: number;
-}
 
 

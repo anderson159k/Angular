@@ -1,11 +1,8 @@
+import { SavingLocalService } from '../../services/saving-local.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { MecanicTime } from 'src/app/interfaces/mecanic-time';
+import { MecanicTableService } from 'src/app/services/mecanic-table.service';
 
-const ELEMENT_DATA2: MecanicTime[] = [
-  {mecanico: "Mec1", tempo: `1h22`},
-  {mecanico: "Mec2", tempo: `3h30`},
-  {mecanico: "Mec3", tempo: `5h02`}
-];
 
 @Component({
   selector: 'app-mecanic-list',
@@ -13,16 +10,29 @@ const ELEMENT_DATA2: MecanicTime[] = [
   styleUrls: ['./mecanic-list.component.scss']
 })
 export class MecanicListComponent implements OnInit{
-  
-  @Input() iten?: {
+
+  constructor(private savingLocalService: SavingLocalService, private mecanicTableService: MecanicTableService) {}
+
+  @Input() iten: {
     selectedMecanic: string,
     mecanics: Map<string, MecanicTime>,
   };
 
-  ngOnInit(): void {
-    
-  }
-  displayedColumns: string[] = ['mecanico','tempo'];
-  dataSource2 = ELEMENT_DATA2;
-}
+  dataSource2: MecanicTime[] = [];
+  displayedColumns: string[] = ['id', 'mecanico','tempo'];
 
+  ngOnInit(): void {
+    this.setTable();
+    this.dataSource2 = this.mecanicTableService.getMecanicData();
+  }
+
+  public setTable() {
+    if(this.iten){
+      this.dataSource2 = Array.from(this.iten.mecanics.values());
+    }
+  }
+
+  adicionarItemNaTabela(tempo: string) {
+    this.mecanicTableService.addMecanicData(this.iten.selectedMecanic, tempo);
+  }
+}

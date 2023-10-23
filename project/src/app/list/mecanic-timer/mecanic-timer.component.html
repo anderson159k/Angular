@@ -2,22 +2,17 @@
   <p class="fontTest d-flex justify-content-center">
     {{display.hours}}:{{display.minutes}}:{{display.seconds}}
   </p>
-
   <ng-container class="p-3 bg-white d-flex justify-content-center">
     <div class="bg-white">
       <button class="btnB ps-3 py-3"
+      [disabled]="iten?.blockedStartButton"
               (click)="start()">
         <i class="btn btn-success fontTestB">Play</i>
       </button>
-      <!-- <button class="btnB  py-3"
-        (click)="timer.resume()">
-        <i class="btn btn-secondary">Resume</i>
-      </button> -->
       <button class="btnB  py-3 "
               (click)="pause()">
         <i class="btn btn-secondary fontTestB">Pause</i>
       </button>
-
       <button class="btnB pe-3 py-3 "
               (click)="reset()">
         <i class="btn btn-danger fontTestB">Reset</i>

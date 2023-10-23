@@ -54,7 +54,10 @@
               <app-mecanic-timer #timer
                                  class="d-flex justify-content-center bg-light"
                                  [iten]="itenControler2.get(element.codigo)"></app-mecanic-timer>
-
+                                 <form (ngSubmit)="adicionarItemNaTabela()">
+                                  <input type="text" name="tempo" (ngModel)="tempo" required placeholder="Tempo">
+                                  <button type="submit">Adicionar</button>
+                                </form>
             </div>
             <hr>
             <div>

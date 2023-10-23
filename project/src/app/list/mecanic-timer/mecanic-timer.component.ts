@@ -1,6 +1,9 @@
+import { SavingLocalService } from '../../services/saving-local.service';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MekanicInItem } from 'src/app/interfaces/mecanic-in-iten';
 import { Subscription, interval } from 'rxjs';
+import { Iten } from 'src/app/interfaces/iten-interface';
+
 
 @Component({
   selector: 'app-mecanic-timer',
@@ -9,6 +12,10 @@ import { Subscription, interval } from 'rxjs';
 })
 
 export class MecanicTimerComponent implements OnInit, OnDestroy {
+
+  constructor(
+    private savingLocalService: SavingLocalService
+  ) { }
 
   tick = interval(1000);
   sub: Subscription;
@@ -23,6 +30,7 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
     selectedMecanic: string,
     mecanics: Map<string, MekanicInItem>,
     blocked: boolean
+    blockedStartButton: boolean
   };
 
   ngOnInit(): void {
@@ -64,7 +72,7 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
     if (this.iten) {
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
       if (mecanico) {
-        if (mecanico.lastPlayTime?.valueOf()) { 
+        if (mecanico.lastPlayTime?.valueOf()) {
           // se o mecânico possui `lastPlayTime`, utiliza esse valor nos cálculos
           this.startTime = mecanico.lastPlayTime.valueOf();
         } else {
@@ -103,7 +111,11 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
         this.sub = this.tick.subscribe(() => this.calTime());
         if (typeof this.iten.blocked !== 'undefined') {
           this.iten.blocked = true;
+          this.iten.blockedStartButton = true;
         }
+        
+        // const itenArray: MekanicInItem[] = Array.from(this.iten.mecanics.values());
+        // this.savingLocalService.saveData(itenArray);
       }
     }
   }
@@ -117,6 +129,7 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
         mecanico.total += elapsedTime;
         mecanico.running = false;
         mecanico.lastPlayTime = undefined;
+        this.iten.blockedStartButton = false;
       }
     }
   }
@@ -131,12 +144,16 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
         mecanico.running = false;
         mecanico.finished = false;
         mecanico.lastPlayTime = undefined;
+        this.iten.blockedStartButton = false;
         this.display.hours = "00";
         this.display.minutes = "00";
         this.display.seconds = "00";
+
+        
         if (typeof this.iten.blocked !== 'undefined') {
           this.iten.blocked = false;
         }
+        console.log(mecanico.total);
       }
     }
   }
