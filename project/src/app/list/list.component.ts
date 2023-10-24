@@ -30,8 +30,6 @@ export class ListComponent implements OnInit {
 
     dataSource: Iten [] = [];
 
-    
-
   allMecanics = ['Mec1', 'Mec2', 'Mec3', 'Mec4', 'Mec5'];
 
   itenControler2 = new Map<string, {
@@ -40,13 +38,6 @@ export class ListComponent implements OnInit {
     blocked: boolean,
     blockedStartButton: boolean
   }>();
-  
-  
-
-  itenlist: {
-    selectedMecanic: any,
-  };
-  tempo: string = '';
 
   onMecanicChanged(codItem: string, name: string) {
     const item = this.itenControler2.get(codItem);
@@ -54,13 +45,6 @@ export class ListComponent implements OnInit {
       item.selectedMecanic = name;
     }
     this._timer.defineInitialTimer();
-  }
-
-  adicionarItemNaTabela() {
-    if (this.tempo) {
-      this.mecanicTableService.addMecanicData(this.itenlist.selectedMecanic, this.tempo);
-      this.tempo = ''; 
-    }
   }
 
   initializeMapController() {

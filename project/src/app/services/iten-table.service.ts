@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Iten } from '../interfaces/iten-interface';
+import { MekanicInItem } from '../interfaces/mecanic-in-iten';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SavingLocalService {
-  private key = "services";
+export class ItenTableService {
+  private key = "itens-table";
   constructor() { }
 
-  public saveData(itens: Iten []) : void {
+  public saveData(itens: MekanicInItem []) : void {
     localStorage.setItem(this.key, JSON.stringify(itens));
   }
 
@@ -25,17 +26,15 @@ export class SavingLocalService {
     return allItens.find(iten => iten.codigo == codIten)
   }
 
-  public updateOrPush(iten: Iten) {
-    const allItens = this.getData();
-    const index = allItens.findIndex((existingIten) => existingIten.codigo === iten.codigo);
+  // public updateOrPush(iten: MekanicInItem) {
+  //   const allItens = this.getData();
+  //   const index = allItens.findIndex((existingIten) => existingIten.codigo === iten.codigo);
   
-    if (index !== -1) {
-      allItens[index] = iten;
-    } else {
-      allItens.push(iten);
-    }
-    this.saveData(allItens);
-  }  
+  //   if (index !== -1) {
+  //     allItens[index] = iten;
+  //   } else {
+  //     allItens.push(iten);
+  //   }
+  //   this.saveData(allItens);
+  // }  
 }
-
-

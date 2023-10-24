@@ -52,6 +52,7 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import { CdTimerModule } from 'angular-cd-timer';
 import { MecanicTimerComponent } from './list/mecanic-timer/mecanic-timer.component';
 import { MecanicListComponent } from './list/mecanic-list/mecanic-list.component';
+import { ObservationsListComponent } from './list/observations-list/observations-list.component';
 
 
 @NgModule({
@@ -60,6 +61,7 @@ import { MecanicListComponent } from './list/mecanic-list/mecanic-list.component
     ListComponent,
     MecanicTimerComponent,
     MecanicListComponent,
+    ObservationsListComponent,
   ],
   imports: [
     CdTimerModule,

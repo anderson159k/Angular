@@ -12,12 +12,12 @@ export class MecanicTableService {
     return this.data;
   }
 
-  addMecanicData(selectedMecanic: string, tempo: string) {
-    const newMecanic: MecanicTime = {
-      id: tempo,
-      mecanico: selectedMecanic,
-      tempo: tempo
-    };
-    this.data.push(newMecanic);
-  }
+  // addMecanicData(selectedMecanic: string, tempo: string) {
+  //   const newMecanic: MecanicTime = {
+  //     id: tempo,
+  //     mecanico: selectedMecanic,
+  //     tempo: tempo
+  //   };
+  //   this.data.push(newMecanic);
+  // }
 }

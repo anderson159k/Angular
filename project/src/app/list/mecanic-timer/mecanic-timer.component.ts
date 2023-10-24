@@ -3,6 +3,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MekanicInItem } from 'src/app/interfaces/mecanic-in-iten';
 import { Subscription, interval } from 'rxjs';
 import { Iten } from 'src/app/interfaces/iten-interface';
+import { MecanicTime } from 'src/app/interfaces/mecanic-time';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
     private savingLocalService: SavingLocalService
   ) { }
 
+  dataSource: MecanicTime [] = [];
   tick = interval(1000);
   sub: Subscription;
   startTime: number = 0;
@@ -33,8 +35,27 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
     blockedStartButton: boolean
   };
 
+  itenControler = new Map<string, {
+    id: string,
+    mecanico: Map<string, MekanicInItem>,
+    tempo: string
+  }>();
+
+  initializeMapController() {
+
+    // for (const service of this.dataSource) {
+    //   this.itenControler.set(
+    //     service.id, {
+    //       mecanico : "",
+    //       tempo : ""
+    //     }
+    //   );
+    // }
+  }
+
   ngOnInit(): void {
     this.defineInitialTimer()
+
   }
 
   ngOnDestroy(): void {

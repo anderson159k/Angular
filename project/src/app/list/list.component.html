@@ -50,16 +50,15 @@
         <div class="example-element-description">
           <div class="sw-container ">
             <div class="button-container fs-6">
-
+              
               <app-mecanic-timer #timer
                                  class="d-flex justify-content-center bg-light"
                                  [iten]="itenControler2.get(element.codigo)"></app-mecanic-timer>
-                                 <form (ngSubmit)="adicionarItemNaTabela()">
+                                 <!-- <form (ngSubmit)="adicionarItemNaTabela()">
                                   <input type="text" name="tempo" (ngModel)="tempo" required placeholder="Tempo">
                                   <button type="submit">Adicionar</button>
-                                </form>
+                                </form> -->
             </div>
-            <hr>
             <div>
               <app-mecanic-list class="p-3 d-flex justify-content-center rounded"
                                 style="width: 100%;"></app-mecanic-list>

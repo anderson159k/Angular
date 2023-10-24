@@ -32,7 +32,7 @@ export class MecanicListComponent implements OnInit{
     }
   }
 
-  adicionarItemNaTabela(tempo: string) {
-    this.mecanicTableService.addMecanicData(this.iten.selectedMecanic, tempo);
-  }
+  // adicionarItemNaTabela(tempo: string) {
+  //   this.mecanicTableService.addMecanicData(this.iten.selectedMecanic, tempo);
+  // }
 }
