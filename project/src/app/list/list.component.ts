@@ -1,10 +1,9 @@
-import { MecanicTableService } from 'src/app/services/mecanic-table.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { MecanicService } from './../services/mecanic.service';
+import { Component, OnInit } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { MekanicInItem } from '../interfaces/mecanic-in-iten';
-import { MecanicTimerComponent } from './mecanic-timer/mecanic-timer.component';
 import { Iten } from '../interfaces/iten-interface';
 import { SavingLocalService } from '../services/saving-local.service';
+import { Mecanic } from '../interfaces/mecanic';
 
 
 @Component({
@@ -23,57 +22,37 @@ export class ListComponent implements OnInit {
 
   constructor (
     private savingLocalService: SavingLocalService,
-    private mecanicTableService: MecanicTableService
+    private mecanicService: MecanicService,
   ) {}
-
-  @ViewChild('timer') _timer: MecanicTimerComponent;
 
     dataSource: Iten [] = [];
 
-  allMecanics = ['Mec1', 'Mec2', 'Mec3', 'Mec4', 'Mec5'];
+  allMecanics: Mecanic [] = [];  
 
-  itenControler2 = new Map<string, {
-    selectedMecanic: string,
-    mecanics: Map<string, MekanicInItem>,
-    blocked: boolean,
-    blockedStartButton: boolean
-  }>();
+  // initializeMapController() {
 
-  onMecanicChanged(codItem: string, name: string) {
-    const item = this.itenControler2.get(codItem);
-    if (item) {
-      item.selectedMecanic = name;
-    }
-    this._timer.defineInitialTimer();
-  }
+  //   for (const service of this.dataSource) {
+  //     const mecanics = new Map();
 
-  initializeMapController() {
+  //     for (const mecanic of this.allMecanics) {
+  //       service.mecanics.set(mecanic.id,
+  //         {
+  //           mecanincId: mecanic.name,
+  //           finished: false,
+  //           total: 0
+  //         })
+  //     }
+      
+  //   }
+  // }
 
-    for (const service of this.dataSource) {
-      const mecanics = new Map();
-
-      for (const mecanic of this.allMecanics) {
-        mecanics.set(mecanic,
-          {
-            name: mecanic,
-            running: false,
-            finished: false,
-            total: 0
-          })
-      }
-      this.itenControler2.set(
-        service.codigo, {
-          selectedMecanic: "", 
-          blocked: false,
-          blockedStartButton: false,
-          mecanics
-      })
-    }
+  getMecanics(): void {
+    this.allMecanics = this.mecanicService.getData();
   }
 
   ngOnInit(): void {
+    this.getMecanics();
     this.dataSource = this.savingLocalService.getData();
-    this.initializeMapController();
   }
 
  

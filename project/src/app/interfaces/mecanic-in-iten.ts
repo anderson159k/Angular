@@ -1,7 +1,6 @@
 export interface MekanicInItem {
-    name: string,
-    running: boolean,
-    lastPlayTime?: Date,
+    mecanincId: string,
+    lastPlayTime?: number,
     finished: boolean,
     total: number
   }

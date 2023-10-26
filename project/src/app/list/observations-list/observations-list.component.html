@@ -1,7 +1,6 @@
-<form>
-  <div class="group">
-    <input type="text" pattern="[a-z\s]+$" maxlength="37" />
-    <label>Observações</label>
-    <span class="bar"></span>
-  </div>
+<form  class="ps-3 align-self-end example-form" >
+  <mat-form-field class="example-full-width" >
+    <mat-label>Observações :</mat-label>
+    <input matInput style="width: 100%;" [(ngModel)]="iten.observations" (blur)="onBlur()" class="validate" name="observations">
+  </mat-form-field>
 </form>

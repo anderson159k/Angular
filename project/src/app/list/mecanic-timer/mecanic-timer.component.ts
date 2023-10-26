@@ -1,10 +1,7 @@
 import { SavingLocalService } from '../../services/saving-local.service';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MekanicInItem } from 'src/app/interfaces/mecanic-in-iten';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription, interval } from 'rxjs';
 import { Iten } from 'src/app/interfaces/iten-interface';
-import { MecanicTime } from 'src/app/interfaces/mecanic-time';
-
 
 @Component({
   selector: 'app-mecanic-timer',
@@ -13,49 +10,22 @@ import { MecanicTime } from 'src/app/interfaces/mecanic-time';
 })
 
 export class MecanicTimerComponent implements OnInit, OnDestroy {
+  constructor(private savingLocalService: SavingLocalService) { }
 
-  constructor(
-    private savingLocalService: SavingLocalService
-  ) { }
-
-  dataSource: MecanicTime [] = [];
   tick = interval(1000);
   sub: Subscription;
-  startTime: number = 0;
   display = {
-    hours: "00",
-    minutes: "00",
-    seconds: "00"
-  }
-
-  @Input() iten?: {
-    selectedMecanic: string,
-    mecanics: Map<string, MekanicInItem>,
-    blocked: boolean
-    blockedStartButton: boolean
+    hours: '00',
+    minutes: '00',
+    seconds: '00'
   };
 
-  itenControler = new Map<string, {
-    id: string,
-    mecanico: Map<string, MekanicInItem>,
-    tempo: string
-  }>();
+  @Input({ required: true }) iten: Iten;
+  @Output() mecanicsChanged = new EventEmitter<void>()
 
-  initializeMapController() {
-
-    // for (const service of this.dataSource) {
-    //   this.itenControler.set(
-    //     service.id, {
-    //       mecanico : "",
-    //       tempo : ""
-    //     }
-    //   );
-    // }
-  }
 
   ngOnInit(): void {
-    this.defineInitialTimer()
-
+    this.defineInitialTimer();
   }
 
   ngOnDestroy(): void {
@@ -64,52 +34,35 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
 
   calTime(): void {
     if (this.iten) {
+
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
-      if (!mecanico || !mecanico.running) {
+      if (!mecanico || !this.iten.running) {
         return;
       }
-      /**
-       * elapsedTime é o tempo decorrido(em milisegundos) que se passou desde a última
-       * vez em que foi clicado no play para o mecânico selecionado
-       */
-      const elapsedTime = Date.now() - this.startTime;
-
-      /**
-       * totalTime é o tempo decorrido somado a outros intervalos que 
-       * já haviam sido contabilizados anteriormente (quando já houve play/pause antes)
-       */
-      const totalTime = elapsedTime + mecanico.total;
-      this.setDisplay(totalTime)
+      if (mecanico.lastPlayTime) {
+        const elapsedTime = Date.now() - mecanico.lastPlayTime;
+        const totalTime = elapsedTime + mecanico.total;
+        this.setDisplay(totalTime);
+      } else {
+        const elapsedTime = Date.now();
+        const totalTime = elapsedTime + mecanico.total;
+        this.setDisplay(totalTime);
+      }
     }
   }
 
-  /**
-   * Em Typescript, modificadores de acesso não definidos são considerados como públicos por padrão.
-   * Nesse caso deixamos explícito que esse método é público para evitar modificar para privado acidentalmente
-   * 
-   * Esse método é público porque está sendo chamado a partir de ListComponent quando o mecânico é alterado;
-   */
-  public defineInitialTimer() {
+  defineInitialTimer(): void {
     if (this.iten) {
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
       if (mecanico) {
-        if (mecanico.lastPlayTime?.valueOf()) {
-          // se o mecânico possui `lastPlayTime`, utiliza esse valor nos cálculos
-          this.startTime = mecanico.lastPlayTime.valueOf();
-        } else {
-          // senão, o `lastPlayTime` é agora
-          // o código entra aqui na primeira vez que se aperta play em um mecânico
-          this.startTime = Date.now();
-        }
         this.setDisplay(mecanico.total);
+        if (this.iten.running) {
+          this.sub = this.tick.subscribe(() => this.calTime());
+        }
       }
     }
   }
 
-  /** 
-   * Funcionando perfeitamente, recebe um valor total em milisegundos e 
-   * atualiza o timer com horas:minutos:segundos
-   */
   setDisplay(totalTime: number): void {
     const totalSeconds = Math.floor(totalTime / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -127,56 +80,55 @@ export class MecanicTimerComponent implements OnInit, OnDestroy {
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
       if (mecanico) {
         mecanico.finished = true;
-        mecanico.running = true;
+        this.iten.running = true;
+        mecanico.lastPlayTime = Date.now();
         this.defineInitialTimer();
         this.sub = this.tick.subscribe(() => this.calTime());
         if (typeof this.iten.blocked !== 'undefined') {
           this.iten.blocked = true;
-          this.iten.blockedStartButton = true;
         }
-        
-        // const itenArray: MekanicInItem[] = Array.from(this.iten.mecanics.values());
-        // this.savingLocalService.saveData(itenArray);
+        this.savingLocalService.updateOrPush(this.iten);
       }
     }
+  }
+
+  resetDisplay(): void {
+    this.display.hours = '00';
+    this.display.minutes = '00';
+    this.display.seconds = '00';
   }
 
   pause(): void {
     if (this.iten) {
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
-      if (mecanico && mecanico.running) {
+      if (mecanico && this.iten.running) {
         this.sub.unsubscribe();
-        const elapsedTime = Date.now() - this.startTime;
-        mecanico.total += elapsedTime;
-        mecanico.running = false;
+        if (mecanico.lastPlayTime) {
+          const elapsedTime = Date.now() - mecanico.lastPlayTime;
+          mecanico.total += elapsedTime;
+        }
+        this.iten.running = false;
         mecanico.lastPlayTime = undefined;
-        this.iten.blockedStartButton = false;
+        this.mecanicsChanged.emit();
+        this.savingLocalService.updateOrPush(this.iten);
       }
     }
   }
 
   reset(): void {
     if (this.iten) {
+      this.iten.blocked = false;
+      this.iten.running = false;
       const mecanico = this.iten.mecanics.get(this.iten.selectedMecanic);
       if (mecanico) {
-        this.sub.unsubscribe();
-        const elapsedTime = Date.now() - this.startTime;
-        mecanico.total += elapsedTime;
-        mecanico.running = false;
-        mecanico.finished = false;
-        mecanico.lastPlayTime = undefined;
-        this.iten.blockedStartButton = false;
-        this.display.hours = "00";
-        this.display.minutes = "00";
-        this.display.seconds = "00";
-
-        
-        if (typeof this.iten.blocked !== 'undefined') {
-          this.iten.blocked = false;
+        if (this.iten.running) {
+          this.pause();
         }
-        console.log(mecanico.total);
+        this.savingLocalService.updateOrPush(this.iten);
+        this.resetDisplay();
       }
+
+
     }
   }
 }
-

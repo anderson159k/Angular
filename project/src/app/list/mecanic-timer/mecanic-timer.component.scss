@@ -1,22 +1,26 @@
-.btnB {
+.btnTeme {
     border: 0px;
     background-color: white;
   }
 
-.fontTest {
+.fontTime {
   font-family: 'Orbitron';
   font-size: 22px;
   color: #5C636A;
 }
 
-.fontTestB {
+.fontButton {
   font-family: 'Orbitron';
   font-size: 15px;
 }
 
-.linha-vertical {
-  height: 30px;/*Altura da linha*/
-  border-left: 1px solid;/* Adiciona borda esquerda na div como ser fosse uma linha.*/
+.vertical-line {
+  height: 30px;
+  border-left: 1px solid;
   text-align: left;
   color: #5C636A;
+}
+
+button:disabled {
+  opacity: 0.5;
 }

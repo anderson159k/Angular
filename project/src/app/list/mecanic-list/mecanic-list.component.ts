@@ -1,7 +1,8 @@
 import { SavingLocalService } from '../../services/saving-local.service';
-import { Component, OnInit, Input } from '@angular/core';
-import { MecanicTime } from 'src/app/interfaces/mecanic-time';
-import { MecanicTableService } from 'src/app/services/mecanic-table.service';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { Iten } from 'src/app/interfaces/iten-interface';
+import { MekanicInItem } from 'src/app/interfaces/mecanic-in-iten';
 
 
 @Component({
@@ -9,30 +10,36 @@ import { MecanicTableService } from 'src/app/services/mecanic-table.service';
   templateUrl: './mecanic-list.component.html',
   styleUrls: ['./mecanic-list.component.scss']
 })
-export class MecanicListComponent implements OnInit{
+export class MecanicListComponent implements OnInit, OnDestroy {
 
-  constructor(private savingLocalService: SavingLocalService, private mecanicTableService: MecanicTableService) {}
+  constructor(private savingLocalService: SavingLocalService) { }
 
-  @Input() iten: {
-    selectedMecanic: string,
-    mecanics: Map<string, MecanicTime>,
-  };
+  @Input({ required: true }) iten: Iten;
+  @Input({ required: true }) mecanicsChanged$: Observable<void>;
 
-  dataSource2: MecanicTime[] = [];
-  displayedColumns: string[] = ['id', 'mecanico','tempo'];
+  dataSource2: MekanicInItem[] = [];
+  displayedColumns: string[] = ['mecanico', 'tempo'];
+  sub: Subscription;
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
+
+  setDate(milissegundos: number): string {
+    const minutos = Math.floor((milissegundos / 60000) % 60);
+    const horas = Math.floor(milissegundos / 3600000);
+    return `${horas},${minutos}h`;
+  }
+
 
   ngOnInit(): void {
     this.setTable();
-    this.dataSource2 = this.mecanicTableService.getMecanicData();
+    this.sub = this.mecanicsChanged$.subscribe(() => this.setTable());
   }
 
   public setTable() {
-    if(this.iten){
+    if (this.iten) {
       this.dataSource2 = Array.from(this.iten.mecanics.values());
     }
   }
-
-  // adicionarItemNaTabela(tempo: string) {
-  //   this.mecanicTableService.addMecanicData(this.iten.selectedMecanic, tempo);
-  // }
 }

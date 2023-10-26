@@ -33,7 +33,6 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
-
             ],
             "scripts": []
           },
@@ -101,11 +100,23 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "627c5ea9-3f59-4ad5-bd4b-f933f719b4ee"
+    "analytics": "627c5ea9-3f59-4ad5-bd4b-f933f719b4ee",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

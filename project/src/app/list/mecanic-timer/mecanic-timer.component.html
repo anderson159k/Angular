@@ -1,32 +1,32 @@
 <div class="ps-1 pe-1 bg-white pt-3 rounded shadow-sm" style="width: 97%">
-  
-  <span  class="d-flex justify-content-between" >
-    <app-observations-list class="ps-3 pb-3 align-self-end" style="width: 60%"></app-observations-list>
-    <div class="linha-vertical mb-3 d-flex align-self-center"></div>  
-  <div style="width: 100% d-flex justify-content-end">
-
-    <p class="fontTest d-flex justify-content-center pe-3">
-      {{display.hours}}:{{display.minutes}}:{{display.seconds}}
-    </p>
-    <ng-container class="px-3 pb-3 bg-white">
-      
-      <div class="bg-white">
-        <button class="btnB ps-3 pb-3"
-        [disabled]="iten?.blockedStartButton"
-        (click)="start()">
-        <i class="btn btn-success fontTestB">Play</i>
-    </button>
-    <button class="btnB  pb-3 "
-    (click)="pause()">
-    <i class="btn btn-secondary fontTestB">Pause</i>
-  </button>
-  <button class="btnB pe-3 pb-3 "
-  (click)="reset()">
-  <i class="btn btn-danger fontTestB">Reset</i>
-</button>
+  <span class="d-flex justify-content-between">
+    <app-observations-list
+      [iten]="iten"
+      class="align-self-end"
+      style="width: 60%"
+    ></app-observations-list>
+    <div class="vertical-line mb-3 ms-3 d-flex align-self-center"></div>
+    <div>
+      <p class="fontTime pe-3 d-flex justify-content-center">
+        {{ display.hours }}:{{ display.minutes }}:{{ display.seconds }}
+      </p>
+      <ng-container class="px-3 pb-3 bg-white">
+        <div class="bg-white">
+          <button
+            class="btnTeme ps-3 pb-3"
+            [disabled]="iten.running"
+            (click)="start()"
+          >
+            <i class="btn btn-success fontButton">Play</i>
+          </button>
+          <button class="btnTeme pb-3" (click)="pause()">
+            <i class="btn btn-secondary fontButton">Pause</i>
+          </button>
+          <button class="btnTeme pe-3 pb-3" (click)="reset()">
+            <i class="btn btn-danger fontButton">Finish</i>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </span>
 </div>
-</ng-container>
-</div>
-</span>
-</div>
-<div id="resetB"></div>

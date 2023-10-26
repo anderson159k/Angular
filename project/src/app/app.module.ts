@@ -48,11 +48,11 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import { CdTimerModule } from 'angular-cd-timer';
 import { MecanicTimerComponent } from './list/mecanic-timer/mecanic-timer.component';
 import { MecanicListComponent } from './list/mecanic-list/mecanic-list.component';
 import { ObservationsListComponent } from './list/observations-list/observations-list.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -64,6 +64,8 @@ import { ObservationsListComponent } from './list/observations-list/observations
     ObservationsListComponent,
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     CdTimerModule,
     BrowserModule,
     AppRoutingModule,

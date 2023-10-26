@@ -1,3 +1,5 @@
+import { MekanicInItem } from "./mecanic-in-iten";
+
 export interface Iten {
     estado: string;
     Sequencia: number;
@@ -8,5 +10,10 @@ export interface Iten {
     descontopecas: number;
     descontoad: number;
     valorlq: number;
+    selectedMecanic: string;
+    mecanics: Map<string, MekanicInItem>;
+    blocked: boolean;
+    running: boolean;
+    observations: string;
   }
   
